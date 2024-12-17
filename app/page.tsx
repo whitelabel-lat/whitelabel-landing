@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { ArrowRight, Bot, Zap, Settings, ChevronRight } from "lucide-react";
 import Image from "next/image";
 import { Card } from "@/components/ui/card";
+import FacebookLoginButton from "../components/ui/FacebookLoginButton";
 
 export default function Home() {
   return (
@@ -146,31 +147,31 @@ export default function Home() {
 
       {/* Footer */}
       <footer className="bg-gray-900 text-gray-300 py-12">
-        <div className="container mx-auto px-4">
-          <div className="grid md:grid-cols-3 gap-8">
-            <div>
-              <h3 className="text-xl font-bold mb-4">Contacto</h3>
-              <p>contacto@tuempresa.com</p>
-              <p>+34 900 123 456</p>
-            </div>
-            <div>
-              <h3 className="text-xl font-bold mb-4">Síguenos</h3>
-              <div className="flex space-x-4">
-                <a href="#" className="hover:text-white">LinkedIn</a>
-                <a href="#" className="hover:text-white">Twitter</a>
-              </div>
-            </div>
-            <div>
-              <p className="text-sm">
-                "Creamos soluciones invisibles, pero con resultados extraordinarios."
-              </p>
-            </div>
-          </div>
-          <div className="mt-8 pt-8 border-t border-gray-800 text-center">
-            <p>&copy; 2024 Tu Empresa. Todos los derechos reservados.</p>
-          </div>
+  <div className="container mx-auto px-4">
+    <div className="grid md:grid-cols-3 gap-8">
+      <div>
+        <h3 className="text-xl font-bold mb-4">Contacto</h3>
+        <p>contacto@tuempresa.com</p>
+        <p>+34 900 123 456</p>
+      </div>
+      <div>
+        <h3 className="text-xl font-bold mb-4">Síguenos</h3>
+        <div className="flex space-x-4">
+          <a href="#" className="hover:text-white">LinkedIn</a>
+          <a href="#" className="hover:text-white">Twitter</a>
         </div>
-      </footer>
+      </div>
+      {/* Botón de Facebook */}
+      <div>
+        <h3 className="text-xl font-bold mb-4">Login</h3>
+        <FacebookLoginButton appId="516359088080867" apiVersion="v21.0" configurationId="2266726483726993" />
+      </div>
+    </div>
+    <div className="mt-8 pt-8 border-t border-gray-800 text-center">
+      <p>&copy; 2024 Tu Empresa. Todos los derechos reservados.</p>
+    </div>
+  </div>
+</footer>
     </main>
   );
 }
