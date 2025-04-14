@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import useFacebookSDK from "../../hooks/useFacebookSDK";
 
 interface FacebookLoginButtonProps {
@@ -15,11 +15,53 @@ const FacebookLoginButton: React.FC<FacebookLoginButtonProps> = ({
   configurationId,
 }) => {
   const FB = useFacebookSDK(appId, apiVersion);
+  const [isProcessing, setIsProcessing] = useState(false);
 
   useEffect(() => {
     if (!FB) return;
 
+    // Función para procesar el código de autorización
+    const processAuthCode = async (code: string) => {
+      try {
+        // Llamada al endpoint para intercambiar el código por los datos del negocio
+        const response = await fetch(`https://valeian8n.vercel.app/api/auth/exchange-code`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ code }),
+        });
+
+        if (!response.ok) {
+          throw new Error('Error exchanging code');
+        }
+
+        const data = await response.json();
+        
+        // Enviar los datos del negocio al webhook
+        const webhookResponse = await fetch("https://valeian8n.vercel.app/api/onboarding/callback", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(data),
+        });
+
+        if (webhookResponse.ok) {
+          console.log("✅ Datos enviados al webhook correctamente");
+          window.location.href = "https://valeian8n.vercel.app/onboarding-finish";
+        } else {
+          console.error("❌ Error al enviar datos al webhook", webhookResponse.status);
+        }
+      } catch (error) {
+        console.error("❌ Error procesando el código de autorización:", error);
+      } finally {
+        setIsProcessing(false);
+      }
+    };
+
     const handleMessageEvent = (event: MessageEvent) => {
+      // Verificar origen del mensaje
       if (
         event.origin !== "https://www.facebook.com" &&
         event.origin !== "https://web.facebook.com"
@@ -27,51 +69,40 @@ const FacebookLoginButton: React.FC<FacebookLoginButtonProps> = ({
         return;
 
       try {
-        const message = JSON.parse(event.data);
-
-        if (message.type === "WA_EMBEDDED_SIGNUP" && message.data) {
-          const {
-            access_token,
-            phone_number_id,
-            whatsapp_business_account_id,
-            business_id,
-            display_phone_number,
-            name,
-          } = message.data;
-
-          console.log("✅ Datos recibidos del onboarding:", message.data);
-
-          // Enviar los datos al backend
-          fetch("https://valeian8n.vercel.app/api/onboarding/callback", {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify({
-              access_token,
-              phone_number_id,
-              whatsapp_business_account_id,
-              business_id,
-              display_phone_number,
-              name,
-            }),
-          })
+        // Si el mensaje contiene un código de autorización directo
+        if (event.data && typeof event.data === 'string' && event.data.includes('code=')) {
+          const codeMatch = event.data.match(/code=([^&]+)/);
+          if (codeMatch && codeMatch[1]) {
+            processAuthCode(codeMatch[1]);
+          }
+        }
+        
+        // Si el mensaje es un objeto con datos del onboarding
+        else if (typeof event.data === 'string') {
+          const data = JSON.parse(event.data);
+          if (data.type === "WA_EMBEDDED_SIGNUP" && data.data) {
+            fetch("https://valeian8n.vercel.app/api/onboarding/callback", {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+              },
+              body: JSON.stringify(data.data),
+            })
             .then((res) => {
               if (res.ok) {
-                console.log("✅ Datos enviados al backend correctamente");
-                // Redirigir al usuario al finalizar
-                window.location.href =
-                  "https://valeian8n.vercel.app/onboarding-finish";
+                console.log("✅ Datos enviados al webhook correctamente");
+                window.location.href = "https://valeian8n.vercel.app/onboarding-finish";
               } else {
-                console.error("❌ Error al enviar datos al backend", res.status);
+                console.error("❌ Error al enviar datos al webhook", res.status);
               }
             })
             .catch((error) => {
               console.error("❌ Error en el fetch:", error);
             });
+          }
         }
       } catch (err) {
-        console.error("❌ Error parseando el mensaje:", event.data);
+        console.error("❌ Error procesando mensaje:", err);
       }
     };
 
@@ -82,15 +113,17 @@ const FacebookLoginButton: React.FC<FacebookLoginButtonProps> = ({
   }, [FB]);
 
   const launchWhatsAppSignup = () => {
-    if (!FB) return;
+    if (!FB || isProcessing) return;
 
+    setIsProcessing(true);
     FB.login(
       (response: any) => {
-        if (response.authResponse) {
-          const code = response.authResponse.code;
-          console.log("Auth Response Code:", code);
+        if (response.authResponse && response.authResponse.code) {
+          console.log("✅ Código de autorización recibido:", response.authResponse.code);
+          // El código será procesado por el event listener
         } else {
-          console.error("Login Response Error:", response);
+          console.error("❌ Error en la respuesta de login:", response);
+          setIsProcessing(false);
         }
       },
       {
@@ -99,8 +132,8 @@ const FacebookLoginButton: React.FC<FacebookLoginButtonProps> = ({
         override_default_response_type: true,
         extras: {
           setup: {},
-          featureType: "",
-          sessionInfoVersion: "3",
+          feature: "whatsapp_embedded_signup",
+          version: "v18.0",
         },
       }
     );
@@ -109,20 +142,22 @@ const FacebookLoginButton: React.FC<FacebookLoginButtonProps> = ({
   return (
     <button
       onClick={launchWhatsAppSignup}
+      disabled={isProcessing}
       style={{
-        backgroundColor: "#1877f2",
+        backgroundColor: isProcessing ? "#cccccc" : "#1877f2",
         border: 0,
         borderRadius: "4px",
         color: "#fff",
-        cursor: "pointer",
+        cursor: isProcessing ? "not-allowed" : "pointer",
         fontFamily: "Helvetica, Arial, sans-serif",
         fontSize: "16px",
         fontWeight: "bold",
         height: "40px",
         padding: "0 24px",
+        transition: "background-color 0.3s ease",
       }}
     >
-      Conectar con WhatsApp
+      {isProcessing ? "Procesando..." : "Conectar con WhatsApp"}
     </button>
   );
 };
