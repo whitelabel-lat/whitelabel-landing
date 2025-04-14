@@ -27,12 +27,51 @@ const FacebookLoginButton: React.FC<FacebookLoginButtonProps> = ({
         return;
 
       try {
-        const data = JSON.parse(event.data);
-        if (data.type === "WA_EMBEDDED_SIGNUP") {
-          console.log("Message Event:", data);
+        const message = JSON.parse(event.data);
+
+        if (message.type === "WA_EMBEDDED_SIGNUP" && message.data) {
+          const {
+            access_token,
+            phone_number_id,
+            whatsapp_business_account_id,
+            business_id,
+            display_phone_number,
+            name,
+          } = message.data;
+
+          console.log("✅ Datos recibidos del onboarding:", message.data);
+
+          // Enviar los datos al backend
+          fetch("https://valeian8n.vercel.app/api/onboarding/callback", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              access_token,
+              phone_number_id,
+              whatsapp_business_account_id,
+              business_id,
+              display_phone_number,
+              name,
+            }),
+          })
+            .then((res) => {
+              if (res.ok) {
+                console.log("✅ Datos enviados al backend correctamente");
+                // Redirigir al usuario al finalizar
+                window.location.href =
+                  "https://valeian8n.vercel.app/onboarding-finish";
+              } else {
+                console.error("❌ Error al enviar datos al backend", res.status);
+              }
+            })
+            .catch((error) => {
+              console.error("❌ Error en el fetch:", error);
+            });
         }
-      } catch {
-        console.error("Message Event Error:", event.data);
+      } catch (err) {
+        console.error("❌ Error parseando el mensaje:", event.data);
       }
     };
 
@@ -83,7 +122,7 @@ const FacebookLoginButton: React.FC<FacebookLoginButtonProps> = ({
         padding: "0 24px",
       }}
     >
-      Login with Facebook
+      Conectar con WhatsApp
     </button>
   );
 };
