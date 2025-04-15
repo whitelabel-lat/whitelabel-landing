@@ -24,7 +24,7 @@ const FacebookLoginButton: React.FC<FacebookLoginButtonProps> = ({
     const processAuthCode = async (code: string) => {
       try {
         // Llamada al endpoint para intercambiar el código por los datos del negocio
-        const response = await fetch(`https://valeian8n.whitelabel.lat/api/auth/exchange-code/`, {
+        const response = await fetch("https://valeian8n.whitelabel.lat/api/auth/exchange-code/", {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
