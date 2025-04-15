@@ -24,7 +24,7 @@ const FacebookLoginButton: React.FC<FacebookLoginButtonProps> = ({
     const processAuthCode = async (code: string) => {
       try {
         // Llamada al endpoint para intercambiar el código por los datos del negocio
-        const response = await fetch(`https://valeian8n.vercel.app/api/auth/exchange-code`, {
+        const response = await fetch(`https://valeian8n.whitelabel.lat/api/auth/exchange-code`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
@@ -39,7 +39,7 @@ const FacebookLoginButton: React.FC<FacebookLoginButtonProps> = ({
         const data = await response.json();
         
         // Enviar los datos del negocio al webhook
-        const webhookResponse = await fetch("https://valeian8n.vercel.app/api/onboarding/callback", {
+        const webhookResponse = await fetch("https://valeian8n.whitelabel.lat/api/onboarding/callback", {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
@@ -49,7 +49,7 @@ const FacebookLoginButton: React.FC<FacebookLoginButtonProps> = ({
 
         if (webhookResponse.ok) {
           console.log("✅ Datos enviados al webhook correctamente");
-          window.location.href = "https://valeian8n.vercel.app/onboarding-finish";
+          window.location.href = "https://valeian8n.whitelabel.lat/onboarding-finish";
         } else {
           console.error("❌ Error al enviar datos al webhook", webhookResponse.status);
         }
@@ -81,7 +81,7 @@ const FacebookLoginButton: React.FC<FacebookLoginButtonProps> = ({
         else if (typeof event.data === 'string') {
           const data = JSON.parse(event.data);
           if (data.type === "WA_EMBEDDED_SIGNUP" && data.data) {
-            fetch("https://valeian8n.vercel.app/api/onboarding/callback", {
+            fetch("https://valeian8n.whitelabel.lat/api/onboarding/callback", {
               method: "POST",
               headers: {
                 "Content-Type": "application/json",
@@ -91,7 +91,7 @@ const FacebookLoginButton: React.FC<FacebookLoginButtonProps> = ({
             .then((res) => {
               if (res.ok) {
                 console.log("✅ Datos enviados al webhook correctamente");
-                window.location.href = "https://valeian8n.vercel.app/onboarding-finish";
+                window.location.href = "https://valeian8n.whitelabel.lat/onboarding-finish";
               } else {
                 console.error("❌ Error al enviar datos al webhook", res.status);
               }
