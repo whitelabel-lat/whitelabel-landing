@@ -37,7 +37,7 @@ const FacebookLoginButton: React.FC<FacebookLoginButtonProps> = ({
         }
 
         const data = await response.json();
-        
+
         // Enviar los datos del negocio al webhook
         const webhookResponse = await fetch("https://valeian8n.whitelabel.lat/api/onboarding/callback", {
           method: "POST",
@@ -76,7 +76,7 @@ const FacebookLoginButton: React.FC<FacebookLoginButtonProps> = ({
             processAuthCode(codeMatch[1]);
           }
         }
-        
+
         // Si el mensaje es un objeto con datos del onboarding
         else if (typeof event.data === 'string') {
           const data = JSON.parse(event.data);
@@ -88,17 +88,17 @@ const FacebookLoginButton: React.FC<FacebookLoginButtonProps> = ({
               },
               body: JSON.stringify(data.data),
             })
-            .then((res) => {
-              if (res.ok) {
-                console.log("✅ Datos enviados al webhook correctamente");
-                window.location.href = "https://valeian8n.whitelabel.lat/onboarding-finish";
-              } else {
-                console.error("❌ Error al enviar datos al webhook", res.status);
-              }
-            })
-            .catch((error) => {
-              console.error("❌ Error en el fetch:", error);
-            });
+              .then((res) => {
+                if (res.ok) {
+                  console.log("✅ Datos enviados al webhook correctamente");
+                  window.location.href = "https://valeian8n.whitelabel.lat/onboarding-finish";
+                } else {
+                  console.error("❌ Error al enviar datos al webhook", res.status);
+                }
+              })
+              .catch((error) => {
+                console.error("❌ Error en el fetch:", error);
+              });
           }
         }
       } catch (err) {
@@ -130,10 +130,11 @@ const FacebookLoginButton: React.FC<FacebookLoginButtonProps> = ({
         config_id: configurationId,
         response_type: "code",
         override_default_response_type: true,
+        redirect_uri: "https://valeian8n.whitelabel.lat/api/auth/exchange-code/",
         extras: {
           setup: {},
           feature: "whatsapp_embedded_signup",
-          version: "v18.0",
+          version: "v22.0",
         },
       }
     );
