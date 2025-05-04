@@ -120,7 +120,6 @@ const FacebookLoginButton: React.FC<FacebookLoginButtonProps> = ({
       (response: any) => {
         if (response.authResponse && response.authResponse.code) {
           console.log("✅ Código de autorización recibido:", response.authResponse.code);
-          // El código será procesado por el event listener
         } else {
           console.error("❌ Error en la respuesta de login:", response);
           setIsProcessing(false);
@@ -131,6 +130,13 @@ const FacebookLoginButton: React.FC<FacebookLoginButtonProps> = ({
         response_type: "code",
         override_default_response_type: true,
         redirect_uri: "https://valeian8n.whitelabel.lat/api/auth/exchange-code/",
+        auth_type: 'rerequest',
+        scope: [
+          "whatsapp_business_management",
+          "whatsapp_business_messaging",
+          "business_management",
+          "pages_show_list"
+        ].join(","), // ✅ << Aquí agregas los permisos
         extras: {
           setup: {},
           feature: "whatsapp_embedded_signup",
