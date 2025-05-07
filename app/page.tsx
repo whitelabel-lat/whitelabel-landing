@@ -5,6 +5,7 @@ import { ArrowRight, Bot, Zap, Settings, ChevronRight } from "lucide-react";
 import Image from "next/image";
 import { Card } from "@/components/ui/card";
 import FacebookLoginButton from "../components/ui/FacebookLoginButton";
+import Link from "next/link";
 
 export default function Home() {
   return (
@@ -147,31 +148,35 @@ export default function Home() {
 
       {/* Footer */}
       <footer className="bg-gray-900 text-gray-300 py-12">
-  <div className="container mx-auto px-4">
-    <div className="grid md:grid-cols-3 gap-8">
-      <div>
-        <h3 className="text-xl font-bold mb-4">Contacto</h3>
-        <p>contacto@tuempresa.com</p>
-        <p>+34 900 123 456</p>
-      </div>
-      <div>
-        <h3 className="text-xl font-bold mb-4">Síguenos</h3>
-        <div className="flex space-x-4">
-          <a href="#" className="hover:text-white">LinkedIn</a>
-          <a href="#" className="hover:text-white">Twitter</a>
+        <div className="container mx-auto px-4">
+          <div className="grid md:grid-cols-3 gap-8">
+            <div>
+              <h3 className="text-xl font-bold mb-4">Contacto</h3>
+              <p>hola@whitelabel.lat</p>
+              <p>+57 304 5809637</p>
+            </div>
+            <div>
+              <h3 className="text-xl font-bold mb-4">Síguenos</h3>
+              <div className="flex space-x-4">
+                <a href="https://www.linkedin.com/company/whitelabel-ai/" className="hover:text-white">LinkedIn</a>
+                <a href="#" className="hover:text-white">Twitter</a>
+              </div>
+            </div>
+            {/* Botón de Facebook */}
+            <div>
+              <h3 className="text-xl font-bold mb-4">Login</h3>
+              <FacebookLoginButton appId="516359088080867" apiVersion="v22.0" configurationId="2266726483726993" />
+            </div>
+          </div>
+          <div className="mt-8 pt-8 border-t border-gray-800 text-center">
+            <p>&copy; 2025 Whitelabel. Todos los derechos reservados.</p>
+            <div className="flex justify-center mt-4 space-x-4">
+              <Link href="/politica-de-privacidad" className="hover:text-white">Política de Privacidad</Link>
+              <Link href="/terminos-y-condiciones" className="hover:text-white">Términos y Condiciones</Link>
+            </div>
+          </div>
         </div>
-      </div>
-      {/* Botón de Facebook */}
-      <div>
-        <h3 className="text-xl font-bold mb-4">Login</h3>
-        <FacebookLoginButton appId="516359088080867" apiVersion="v22.0" configurationId="2266726483726993" />
-      </div>
-    </div>
-    <div className="mt-8 pt-8 border-t border-gray-800 text-center">
-      <p>&copy; 2024 Tu Empresa. Todos los derechos reservados.</p>
-    </div>
-  </div>
-</footer>
+      </footer>
     </main>
   );
 }
