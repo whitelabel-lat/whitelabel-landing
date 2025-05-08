@@ -116,36 +116,33 @@ const FacebookLoginButton: React.FC<FacebookLoginButtonProps> = ({
     if (!FB || isProcessing) return;
 
     setIsProcessing(true);
-    FB.logout(() => {
-      FB.login(
-        (response: any) => {
-          if (response.authResponse && response.authResponse.code) {
-            console.log("✅ Código de autorización recibido:", response.authResponse.code);
-          } else {
-            console.error("❌ Error en la respuesta de login:", response);
-            setIsProcessing(false);
-          }
-        },
-        {
-          config_id: configurationId,
-          response_type: "code",
-          override_default_response_type: true,
-          scope: [
-            "whatsapp_business_management",
-            "whatsapp_business_messaging",
-            "business_management",
-            "pages_show_list"
-          ].join(","),
-          auth_type: 'rerequest',
-          redirect_uri: "https://valeian8n.whitelabel.lat/api/auth/exchange-code/",
-          extras: {
-            setup: {},
-            feature: "whatsapp_embedded_signup",
-            version: "v22.0",
-          },
+    FB.login(
+      (response: any) => {
+        if (response.authResponse && response.authResponse.code) {
+          console.log("✅ Código de autorización recibido:", response.authResponse.code);
+        } else {
+          console.error("❌ Error en la respuesta de login:", response);
+          setIsProcessing(false);
         }
-      );
-    });
+      },
+      {
+        config_id: configurationId,
+        response_type: "code",
+        override_default_response_type: true,
+        scope: [
+          "whatsapp_business_management",
+          "whatsapp_business_messaging",
+          "business_management"
+        ].join(","),
+        auth_type: 'rerequest',
+        redirect_uri: "https://valeian8n.whitelabel.lat/api/auth/exchange-code/",
+        extras: {
+          setup: {},
+          feature: "whatsapp_embedded_signup",
+          version: "v22.0",
+        },
+      }
+    );
   };
 
   return (
