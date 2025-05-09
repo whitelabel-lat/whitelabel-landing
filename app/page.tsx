@@ -165,7 +165,7 @@ export default function Home() {
             {/* Botón de Facebook */}
             <div>
               <h3 className="text-xl font-bold mb-4">Login</h3>
-              <FacebookLoginButton appId="516359088080867" apiVersion="v22.0" configurationId="2266726483726993" />
+              <FacebookLoginButton appId="516359088080867" apiVersion="v22.0" configurationId="1375825666987438" />
             </div>
           </div>
           <div className="mt-8 pt-8 border-t border-gray-800 text-center">

@@ -138,7 +138,6 @@ const FacebookLoginButton: React.FC<FacebookLoginButtonProps> = ({
           "business_management"
         ].join(","),
         auth_type: 'rerequest',
-        redirect_uri: "https://valeian8n.whitelabel.lat/api/auth/exchange-code/",
         extras: {
           setup: {},
           feature: "whatsapp_embedded_signup",

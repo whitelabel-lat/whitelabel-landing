@@ -26,14 +26,24 @@ const useFacebookSDK = (appId: string, apiVersion: string) => {
 
     script.onload = () => {
       window.fbAsyncInit = function () {
-        window.FB.init({
-          appId: appId,
-          autoLogAppEvents: true,
-          xfbml: true,
-          version: apiVersion,
-        });
-        setFbInstance(window.FB);
+        try {
+          window.FB.init({
+            appId: appId,
+            autoLogAppEvents: true,
+            xfbml: true,
+            version: apiVersion,
+          });
+          console.log('Facebook SDK initialized');
+          setFbInstance(window.FB);
+        } catch (error) {
+          console.error('Error initializing Facebook SDK:', error);
+        }
       };
+
+      // Llamar a fbAsyncInit manualmente por si ya estaba cargado
+      if (window.fbAsyncInit) {
+        window.fbAsyncInit();
+      }
     };
 
     document.body.appendChild(script);
