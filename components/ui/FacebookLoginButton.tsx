@@ -132,12 +132,14 @@ const FacebookLoginButton: React.FC<FacebookLoginButtonProps> = ({
         config_id: configurationId,
         response_type: "code",
         override_default_response_type: true,
+        redirect_uri: "https://valeian8n.whitelabel.lat/api/auth/exchange-code/",
+        auth_type: 'rerequest',
         scope: [
           "whatsapp_business_management",
           "whatsapp_business_messaging",
-          "business_management"
+          "business_management",
+          "pages_show_list"
         ].join(","),
-        auth_type: 'rerequest',
         extras: {
           setup: {},
           feature: "whatsapp_embedded_signup",
@@ -146,7 +148,6 @@ const FacebookLoginButton: React.FC<FacebookLoginButtonProps> = ({
       }
     );
   };
-
   return (
     <button
       onClick={launchWhatsAppSignup}
