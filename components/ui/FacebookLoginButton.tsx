@@ -48,8 +48,10 @@ const FacebookLoginButton: React.FC<FacebookLoginButtonProps> = ({
         });
 
         if (webhookResponse.ok) {
+          const userData = await webhookResponse.json();
           console.log("✅ Datos enviados al webhook correctamente");
-          window.location.href = "https://valeian8n.whitelabel.lat/onboarding-finish";
+          // Redirigir a la página de finalización con el ID del usuario
+          window.location.href = `https://valeian8n.whitelabel.lat/api/onboarding/finish/${userData.id}`;
         } else {
           console.error("❌ Error al enviar datos al webhook", webhookResponse.status);
         }
@@ -88,10 +90,11 @@ const FacebookLoginButton: React.FC<FacebookLoginButtonProps> = ({
               },
               body: JSON.stringify(data.data),
             })
-              .then((res) => {
+              .then(async (res) => {
                 if (res.ok) {
+                  const userData = await res.json();
                   console.log("✅ Datos enviados al webhook correctamente");
-                  window.location.href = "https://valeian8n.whitelabel.lat/onboarding-finish";
+                  window.location.href = `https://valeian8n.whitelabel.lat/api/onboarding/finish/${userData.id}`;
                 } else {
                   console.error("❌ Error al enviar datos al webhook", res.status);
                 }
